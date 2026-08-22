@@ -5,7 +5,7 @@ npm install
 INFRAI_API_KEY=your_key npm run example
 ```
 
-The executable posts one media brief to Infrai through the OpenAI-compatible `baseURL`, then lets the model call three local tools in sequence: asset ingestion, processing, and creator delivery. A single `INFRAI_API_KEY` keeps that model call behind the same small client interface used by the other Infrai AI capabilities. One key and one bill cover every capability, and it's a plain REST call from any language with no SDK.
+The executable posts one media brief to Infrai through the OpenAI-compatible `baseURL`, then lets the model call three local tools in sequence: asset ingestion, processing, and creator delivery. A single `INFRAI_API_KEY` keeps that model call behind the same small client interface the rest of Infrai's AI capabilities use.
 
 Expected final output:
 
@@ -40,7 +40,7 @@ curl -X POST http://localhost:3000/automations \
 
 ## Reliability boundary
 
-The one real gotcha is ordering. Creator delivery is a business decision, not something the model can skip to early. `MediaWorkflow.deliver` rejects an asset until processing has made it `ready`. The loop also caps at eight turns, so a broken conversation can't run forever. The service logs unexpected failures and maps request or workflow decisions to explicit HTTP responses.
+The one real gotcha is ordering: creator delivery is a business decision, not something the model can skip ahead to. `MediaWorkflow.deliver` rejects an asset until processing has made it `ready`. The loop also has an eight-turn ceiling, so a malformed conversation can't run unbounded. The service logs unexpected failures and maps request or workflow decisions to explicit HTTP responses.
 
 Run the deterministic decision test and the compiler:
 
@@ -53,7 +53,7 @@ The test ingests `asset-7`, verifies early delivery is rejected, processes it, a
 
 ## Scope
 
-This repo keeps asset records in memory so the tool protocol and state transition stay easy to see. Swap `MediaWorkflow` storage for a durable repository when records must survive restarts. The request contract and tool loop stay the same.
+This repo keeps asset records in memory so the tool protocol and state transition stay visible. Swap `MediaWorkflow` storage for a durable repository when records must survive restarts; the request contract and tool loop stay the same.
 
 ## License
 
